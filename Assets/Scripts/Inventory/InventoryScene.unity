@@ -347,8 +347,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -805,11 +805,12 @@ MonoBehaviour:
   inventoryDisplayPrefab: {fileID: 3716639350593158403, guid: 859916c3c2fd7429eace470679b80327, type: 3}
   useScreenSpace: 1
   screenOffset: {x: 0.15, y: 0.85}
-  coinItemData: {fileID: 11400000, guid: 485d21521894946f6b5fd3e5419dbba6, type: 2}
   numberOfCoins: 10
   coinSpawnRadius: 8
   coinSize: 0.5
   playerSprite: {fileID: 0}
+  cameraPreset: {fileID: 0}
+  setupCamera: 1
 --- !u!1001 &601738036255217948
 PrefabInstance:
   m_ObjectHideFlags: 0

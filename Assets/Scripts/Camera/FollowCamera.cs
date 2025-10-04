@@ -193,6 +193,11 @@ namespace CameraSystem
             }
         }
 
+        public void SetCameraStats(CameraStatsData stats)
+        {
+            cameraStats = stats;
+        }
+
         public void SetBounds(Vector2 min, Vector2 max)
         {
             minBounds = min;
