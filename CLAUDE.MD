@@ -20,6 +20,23 @@ Complete guide to the Tarodev 2D platformer controller package, including:
 - **Demo Scene:** `Assets/Tarodev 2D Controller/Demo/Scene.unity`
 - **Default Controls:** WASD/Arrows to move, Space/C to jump
 
+### Inventory & Collection System
+
+**Location:** [docs/creating-collectibles.md](docs/creating-collectibles.md)
+
+Guide for creating collectible items that fly to inventory when player gets close:
+- Complete collection system (Collectible, ItemCollector, CollectionTween)
+- Flying animation with arc and scale effects
+- ItemData ScriptableObject setup
+- Step-by-step prefab creation
+- Automatic slot detection and stacking
+
+**Quick Reference:**
+- **Core Scripts:** `Assets/Scripts/Inventory/`
+- **ItemData Template:** Create → Inventory → Item Data
+- **Main Scene:** `Assets/Scripts/Inventory/InventoryScene.unity`
+- **How it works:** Player touch → Item flies to inventory → Auto-stacks
+
 ---
 
 ## Project Structure
@@ -28,11 +45,21 @@ Complete guide to the Tarodev 2D platformer controller package, including:
 LudumDare58/
 ├── Assets/
 │   ├── Tarodev 2D Controller/    # 2D platformer controller package
+│   ├── Scripts/
+│   │   ├── Inventory/            # Inventory system and collectibles
+│   │   │   ├── InventoryScene.unity  # Main inventory scene
+│   │   │   ├── InventorySystem.cs    # Backend inventory logic
+│   │   │   ├── InventoryDisplay.cs   # Visual inventory grid
+│   │   │   ├── Collectible.cs        # Collectible item component
+│   │   │   └── ItemCollector.cs      # Player collection handler
+│   │   └── InventoryScene/       # Scene initialization scripts
+│   ├── Items/                    # ItemData assets (ScriptableObjects)
 │   ├── Scenes/                   # Unity scenes
 │   ├── Settings/                 # URP and pipeline settings
 │   └── ...
 ├── docs/                         # Project documentation
-│   └── tarodev-2d-controller.md
+│   ├── tarodev-2d-controller.md
+│   └── creating-collectibles.md
 ├── ProjectSettings/              # Unity project configuration
 └── CLAUDE.MD                     # This file
 ```
