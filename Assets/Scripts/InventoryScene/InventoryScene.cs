@@ -1,4 +1,5 @@
 using UnityEngine;
+using CameraSystem;
 
 public class InventoryScene : MonoBehaviour
 {
@@ -18,11 +19,18 @@ public class InventoryScene : MonoBehaviour
     [Header("Player")]
     [SerializeField] private Sprite playerSprite;
 
+    [Header("Camera")]
+    [SerializeField] private CameraStatsData cameraPreset;
+    [SerializeField] private bool setupCamera = true;
+
     private void Start()
     {
         InitializeInventory();
         SetupPlayer();
         SpawnCoins();
+
+        // Setup camera after player is ready (use invoke to ensure player is fully initialized)
+        Invoke(nameof(SetupCamera), 0.1f);
     }
 
     private void InitializeInventory()
@@ -104,5 +112,66 @@ public class InventoryScene : MonoBehaviour
         }
 
         Debug.Log($"Player setup complete! Tag: {player.tag}, Has ItemCollector: {player.GetComponent<ItemCollector>() != null}");
+    }
+
+    private void SetupCamera()
+    {
+        if (!setupCamera)
+        {
+            Debug.Log("Camera setup disabled in InventoryScene settings");
+            return;
+        }
+
+        // Find the main camera
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main Camera not found! Cannot setup camera follow system.");
+            return;
+        }
+
+        Debug.Log($"Setting up camera on: {mainCamera.gameObject.name}");
+
+        // Add FollowCamera component if it doesn't exist
+        FollowCamera followCamera = mainCamera.GetComponent<FollowCamera>();
+        if (followCamera == null)
+        {
+            followCamera = mainCamera.gameObject.AddComponent<FollowCamera>();
+            Debug.Log("Added FollowCamera component to Main Camera");
+        }
+        else
+        {
+            Debug.Log("FollowCamera component already exists on Main Camera");
+        }
+
+        // Find the player to follow
+        GameObject player = GameObject.Find("Hero");
+        if (player == null)
+        {
+            Debug.LogError("Hero GameObject not found! Camera will not follow player. Make sure Hero exists in scene.");
+            return;
+        }
+
+        Debug.Log($"Found Hero at position: {player.transform.position}");
+        Debug.Log($"Camera is at position: {mainCamera.transform.position}");
+
+        // Set the target
+        followCamera.SetTarget(player.transform);
+        Debug.Log($"Camera target set to Hero (Transform: {player.transform.GetInstanceID()})");
+
+        // Apply camera preset if assigned
+        if (cameraPreset != null)
+        {
+            followCamera.SetCameraStats(cameraPreset);
+            Debug.Log($"Applied camera preset: {cameraPreset.name} (Deadzone: {cameraPreset.deadzoneWidth}x{cameraPreset.deadzoneHeight}, Speed: {cameraPreset.smoothSpeed})");
+        }
+        else
+        {
+            Debug.LogWarning("No camera preset assigned! Using default FollowCamera settings.");
+        }
+
+        // Force enable the component
+        followCamera.enabled = true;
+        Debug.Log($"Camera follow system setup complete! Component enabled: {followCamera.enabled}");
     }
 }
