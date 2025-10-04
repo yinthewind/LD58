@@ -37,6 +37,24 @@ Guide for creating collectible items that fly to inventory when player gets clos
 - **Main Scene:** `Assets/Scripts/Inventory/InventoryScene.unity`
 - **How it works:** Player touch → Item flies to inventory → Auto-stacks
 
+### Camera Follow System
+
+**Location:** [docs/camera-system.md](docs/camera-system.md)
+
+Deadzone-based camera controller that keeps the player centered with smooth following:
+- Deadzone box (camera stays still when player near center)
+- Smooth lerp-based camera movement
+- Velocity-based lookahead (optional)
+- World bounds clamping (optional)
+- ScriptableObject presets (Standard, Tight, Loose, Lookahead)
+- Visual debug gizmos
+
+**Quick Reference:**
+- **Core Scripts:** `Assets/Scripts/Camera/`
+- **Presets:** `Assets/Settings/CameraPresets/` (Standard Follow, Tight Follow, Loose Follow, Lookahead Follow)
+- **Setup:** Add FollowCamera to Main Camera → Assign player as target → Choose preset
+- **How it works:** Player in deadzone → Camera still | Player exits deadzone → Camera smoothly follows
+
 ---
 
 ## Project Structure
@@ -46,6 +64,9 @@ LudumDare58/
 ├── Assets/
 │   ├── Tarodev 2D Controller/    # 2D platformer controller package
 │   ├── Scripts/
+│   │   ├── Camera/               # Camera follow system
+│   │   │   ├── FollowCamera.cs       # Main camera controller
+│   │   │   └── CameraStatsData.cs    # Camera configuration presets
 │   │   ├── Inventory/            # Inventory system and collectibles
 │   │   │   ├── InventoryScene.unity  # Main inventory scene
 │   │   │   ├── InventorySystem.cs    # Backend inventory logic
@@ -56,10 +77,12 @@ LudumDare58/
 │   ├── Items/                    # ItemData assets (ScriptableObjects)
 │   ├── Scenes/                   # Unity scenes
 │   ├── Settings/                 # URP and pipeline settings
+│   │   └── CameraPresets/        # Camera preset assets
 │   └── ...
 ├── docs/                         # Project documentation
 │   ├── tarodev-2d-controller.md
-│   └── creating-collectibles.md
+│   ├── creating-collectibles.md
+│   └── camera-system.md
 ├── ProjectSettings/              # Unity project configuration
 └── CLAUDE.MD                     # This file
 ```
