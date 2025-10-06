@@ -94,7 +94,9 @@ public class ItemCollector : MonoBehaviour
     private IEnumerator AnimateCollection(GameObject item, Vector3 targetPosition, string itemName, int slotIndex)
     {
         CollectionTween tween = item.AddComponent<CollectionTween>();
-        tween.Initialize(targetPosition);
+
+        // Pass a lambda that queries fresh slot position every frame
+        tween.Initialize(() => inventoryDisplay.GetSlotPosition(slotIndex));
 
         // Wait for animation to complete
         while (tween != null && !tween.IsComplete)
