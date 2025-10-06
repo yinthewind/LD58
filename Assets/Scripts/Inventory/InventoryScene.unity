@@ -1335,6 +1335,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &139820071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139820073}
+  - component: {fileID: 139820072}
+  m_Layer: 0
+  m_Name: StatsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &139820072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139820071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa569b0daa74487fa237c3db5702402, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 1000
+  currentHealth: 1000
+  currentMoney: 200
+--- !u!4 &139820073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139820071}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 46.93748, y: 506.04425, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &413317682
 GameObject:
   m_ObjectHideFlags: 0
@@ -1498,7 +1545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 1362949049}
+  selectedFlowchart: {fileID: 1665656910}
 --- !u!4 &420927501
 Transform:
   m_ObjectHideFlags: 1
@@ -3406,6 +3453,7 @@ GameObject:
   - component: {fileID: 1665656929}
   - component: {fileID: 1665656930}
   - component: {fileID: 1665656931}
+  - component: {fileID: 1665656932}
   m_Layer: 0
   m_Name: Casino
   m_TagString: Untagged
@@ -3493,8 +3541,9 @@ MonoBehaviour:
     width: 0
     height: 0
   selectedBlocks:
-  - {fileID: 1665656913}
-  selectedCommands: []
+  - {fileID: 1665656915}
+  selectedCommands:
+  - {fileID: 1665656932}
   variables:
   - {fileID: 1665656922}
   - {fileID: 1665656928}
@@ -3629,6 +3678,7 @@ MonoBehaviour:
   - {fileID: 1665656923}
   - {fileID: 1665656926}
   - {fileID: 1665656930}
+  - {fileID: 1665656932}
   suppressAllAutoSelections: 0
 --- !u!114 &1665656916
 MonoBehaviour:
@@ -4020,6 +4070,51 @@ MonoBehaviour:
   targetMethod: ResumeTime
   targetMethodText: 'ResumeTime (): Void'
   methodParameters: []
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
+--- !u!114 &1665656932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665656908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 15
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 139820071}
+  targetComponentAssemblyName: StatsManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: StatsManager
+  targetMethod: ModifyMoney
+  targetMethodText: 'ModifyMoney (Int32): Void'
+  methodParameters:
+  - objValue:
+      typeAssemblyname: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      typeFullname: System.Int32
+      intValue: 0
+      boolValue: 0
+      floatValue: 0
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: MakeMoneyAmount
   saveReturnValue: 0
   returnValueVariableKey: 
   returnValueType: System.Void
@@ -4734,3 +4829,4 @@ SceneRoots:
   - {fileID: 763646454}
   - {fileID: 1777220625}
   - {fileID: 105438611}
+  - {fileID: 139820073}
