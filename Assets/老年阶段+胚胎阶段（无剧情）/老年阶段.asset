@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10b823639e543694d890e5f8a77be1af, type: 3}
-  m_Name: Player Controller
+  m_Name: "\u8001\u5E74\u9636\u6BB5"
   m_EditorClassIdentifier: 
   PlayerLayer:
     serializedVersion: 2
@@ -18,15 +18,15 @@ MonoBehaviour:
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1
-  MaxSpeed: 14
-  Acceleration: 120
+  MaxSpeed: 3
+  Acceleration: 3
   GroundDeceleration: 60
   AirDeceleration: 30
   GroundingForce: -1.5
   GrounderDistance: 0.05
-  JumpPower: 36
-  MaxFallSpeed: 40
-  FallAcceleration: 110
-  JumpEndEarlyGravityModifier: 3
-  CoyoteTime: 0.15
-  JumpBuffer: 0.2
+  JumpPower: 0
+  MaxFallSpeed: 0
+  FallAcceleration: 0
+  JumpEndEarlyGravityModifier: 0
+  CoyoteTime: 0
+  JumpBuffer: 0
