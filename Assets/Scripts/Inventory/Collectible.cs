@@ -4,6 +4,7 @@ using UnityEngine;
 public class Collectible : MonoBehaviour
 {
     [Header("Item Properties")]
+    public ItemType itemType = ItemType.Empty;
     public string itemName = "Item";
     public Sprite icon;
     public Color iconColor = Color.white;
@@ -20,6 +21,9 @@ public class Collectible : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private bool isCollected = false;
 
+    // Optional: Collection cooldown (can be used for delayed item spawning or preventing spam collection)
+    private float collectionCooldown = 0f;
+
     public SpriteRenderer SpriteRenderer => spriteRenderer;
 
     private void Awake()
@@ -28,18 +32,36 @@ public class Collectible : MonoBehaviour
         col.isTrigger = true;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
-        // Set sprite and color if assigned
+    /// <summary>
+    /// Applies the visual settings (sprite and color) to the SpriteRenderer.
+    /// Call this after setting icon and iconColor properties.
+    /// </summary>
+    public void ApplyVisuals()
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
         if (icon != null)
         {
             spriteRenderer.sprite = icon;
-            spriteRenderer.color = iconColor;
+        }
+        spriteRenderer.color = iconColor;
+    }
+
+    private void Update()
+    {
+        if (collectionCooldown > 0)
+        {
+            collectionCooldown -= Time.deltaTime;
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isCollected) return;
+        if (collectionCooldown > 0) return; // Prevent collection during cooldown
 
         Debug.Log($"Collectible triggered by: {other.gameObject.name}, Tag: {other.tag}");
 
@@ -61,6 +83,15 @@ public class Collectible : MonoBehaviour
         {
             Debug.LogWarning($"Object {other.gameObject.name} doesn't have 'Player' tag!");
         }
+    }
+
+    /// <summary>
+    /// Sets a cooldown period during which the item cannot be collected.
+    /// Used to prevent immediate re-collection of dropped items.
+    /// </summary>
+    public void SetCollectionCooldown(float seconds)
+    {
+        collectionCooldown = seconds;
     }
 
     public void MarkAsCollected()

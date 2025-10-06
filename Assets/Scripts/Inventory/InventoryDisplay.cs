@@ -91,6 +91,7 @@ public class InventoryDisplay : MonoBehaviour
     {
         InventorySystem.Instance.OnItemAdded += OnItemAdded;
         InventorySystem.Instance.OnItemsMoved += OnItemsMoved;
+        InventorySystem.Instance.OnItemRemoved += OnItemRemoved;
     }
 
     private void OnDestroy()
@@ -99,6 +100,7 @@ public class InventoryDisplay : MonoBehaviour
         {
             InventorySystem.Instance.OnItemAdded -= OnItemAdded;
             InventorySystem.Instance.OnItemsMoved -= OnItemsMoved;
+            InventorySystem.Instance.OnItemRemoved -= OnItemRemoved;
         }
     }
 
@@ -171,5 +173,70 @@ public class InventoryDisplay : MonoBehaviour
         tex.Apply();
 
         return Sprite.Create(tex, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f), 64);
+    }
+
+    /// <summary>
+    /// Called when an item is removed from inventory. Updates slot visual.
+    /// </summary>
+    private void OnItemRemoved(int slotIndex)
+    {
+        if (slotIndex >= 0 && slotIndex < inventorySlots.Count)
+        {
+            // Set slot to empty
+            inventorySlots[slotIndex].SetItem(new InventorySlot());
+            Debug.Log($"Slot {slotIndex} visual cleared after item removal");
+        }
+    }
+
+    /// <summary>
+    /// Unloads an item from the specified slot and throws it from the player.
+    /// </summary>
+    public void UnloadSlot(int slotIndex)
+    {
+        // Get slot data
+        InventorySlot slot = InventorySystem.Instance.GetSlot(slotIndex);
+        if (slot == null || slot.IsEmpty)
+        {
+            Debug.LogWarning($"Cannot unload slot {slotIndex}: slot is empty");
+            return;
+        }
+
+        // Find player
+        GameObject player = FindPlayer();
+        if (player == null)
+        {
+            Debug.LogError("Cannot unload: Player not found!");
+            return;
+        }
+
+        // Get or add ItemThrower component
+        ItemThrower thrower = player.GetComponent<ItemThrower>();
+        if (thrower == null)
+        {
+            thrower = player.AddComponent<ItemThrower>();
+            Debug.Log("Added ItemThrower component to player");
+        }
+
+        // Throw the item
+        thrower.ThrowItemFromSlot(slot, slotIndex);
+
+        Debug.Log($"Unloaded and threw {slot.itemName} from slot {slotIndex}");
+    }
+
+    /// <summary>
+    /// Finds the player GameObject in the scene.
+    /// </summary>
+    private GameObject FindPlayer()
+    {
+        // Try to find Hero first (as used in InventoryScene.cs)
+        GameObject player = GameObject.Find("Hero");
+
+        // Fallback to Player tag
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        return player;
     }
 }

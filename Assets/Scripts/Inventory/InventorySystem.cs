@@ -13,6 +13,7 @@ public class InventorySystem : MonoBehaviour
 
     public event Action<string, int> OnItemAdded; // itemName, slotIndex
     public event Action<int, int> OnItemsMoved; // fromIndex, toIndex
+    public event Action<int> OnItemRemoved; // slotIndex
 
     public int MaxSlots => maxSlots;
     public List<InventorySlot> Slots => slots;
@@ -38,27 +39,27 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
-    public bool TryAddItem(Collectible collectible)
+    public int TryAddItem(Collectible collectible)
     {
         return TryAddItem(collectible, true);
     }
 
-    public bool TryAddItem(Collectible collectible, bool notifyImmediately)
+    public int TryAddItem(Collectible collectible, bool notifyImmediately)
     {
         if (collectible == null)
-            return false;
+            return -1;
 
         // Try to stack if stackable
         if (collectible.isStackable)
         {
-            foreach (var slot in slots)
+            for (int i = 0; i < slots.Count; i++)
             {
-                if (slot.itemName == collectible.itemName && slot.quantity < collectible.maxStackSize)
+                if (slots[i].itemName == collectible.itemName && slots[i].quantity < collectible.maxStackSize)
                 {
-                    slot.quantity++;
+                    slots[i].quantity++;
                     if (notifyImmediately)
-                        OnItemAdded?.Invoke(collectible.itemName, slots.IndexOf(slot));
-                    return true;
+                        OnItemAdded?.Invoke(collectible.itemName, i);
+                    return i; // Return the slot index where item was stacked
                 }
             }
         }
@@ -69,6 +70,7 @@ public class InventorySystem : MonoBehaviour
             if (slots[i].IsEmpty)
             {
                 // Copy properties from collectible to slot
+                slots[i].itemType = collectible.itemType;
                 slots[i].itemName = collectible.itemName;
                 slots[i].icon = collectible.icon;
                 slots[i].iconColor = collectible.iconColor;
@@ -78,12 +80,12 @@ public class InventorySystem : MonoBehaviour
 
                 if (notifyImmediately)
                     OnItemAdded?.Invoke(collectible.itemName, i);
-                return true;
+                return i; // Return the slot index where item was added
             }
         }
 
         Debug.Log("Inventory is full!");
-        return false;
+        return -1; // Return -1 to indicate failure (inventory full)
     }
 
     public void NotifyItemAdded(string itemName, int slotIndex)
@@ -109,6 +111,9 @@ public class InventorySystem : MonoBehaviour
             return;
 
         slots[slotIndex].Clear();
+
+        // Trigger removal event
+        OnItemRemoved?.Invoke(slotIndex);
     }
 
     public InventorySlot GetSlot(int index)
@@ -122,6 +127,7 @@ public class InventorySystem : MonoBehaviour
 [System.Serializable]
 public class InventorySlot
 {
+    public ItemType itemType = ItemType.Empty;
     public string itemName;
     public Sprite icon;
     public Color iconColor;
@@ -129,10 +135,11 @@ public class InventorySlot
     public int maxStackSize;
     public int quantity;
 
-    public bool IsEmpty => icon == null;
+    public bool IsEmpty => itemType == ItemType.Empty;
 
     public void Clear()
     {
+        itemType = ItemType.Empty;
         itemName = null;
         icon = null;
         iconColor = Color.white;

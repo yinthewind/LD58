@@ -38,6 +38,15 @@ public class InventorySlotDisplay : MonoBehaviour
             backgroundRenderer.sortingOrder = 1;
         }
 
+        // Add BoxCollider2D for click detection
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        if (collider == null)
+        {
+            collider = gameObject.AddComponent<BoxCollider2D>();
+            // Collider size will match the slot's localScale (set by InventoryDisplay)
+            collider.size = Vector2.one;
+        }
+
         UpdateVisuals();
     }
 
@@ -75,5 +84,36 @@ public class InventorySlotDisplay : MonoBehaviour
     public Vector3 GetWorldPosition()
     {
         return transform.position;
+    }
+
+    /// <summary>
+    /// Handles mouse click on the slot to unload/throw item.
+    /// </summary>
+    private void OnMouseUpAsButton()
+    {
+        // Only unload if slot is not empty
+        if (IsEmpty)
+        {
+            Debug.Log($"Slot {slotIndex} is empty, nothing to unload");
+            return;
+        }
+
+        Debug.Log($"Clicked on slot {slotIndex} to unload item: {inventorySlot.itemName}");
+
+        // Find InventoryDisplay and trigger unload
+        InventoryDisplay display = GetComponentInParent<InventoryDisplay>();
+        if (display == null)
+        {
+            display = FindObjectOfType<InventoryDisplay>();
+        }
+
+        if (display != null)
+        {
+            display.UnloadSlot(slotIndex);
+        }
+        else
+        {
+            Debug.LogError("InventoryDisplay not found! Cannot unload item.");
+        }
     }
 }

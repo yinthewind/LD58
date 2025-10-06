@@ -46,15 +46,15 @@ public class ItemCollector : MonoBehaviour
         }
 
         // Add to inventory WITHOUT triggering visual update yet
-        if (InventorySystem.Instance.TryAddItem(collectible, false))
+        int slotIndex = InventorySystem.Instance.TryAddItem(collectible, false);
+
+        if (slotIndex >= 0)
         {
-            Debug.Log($"Successfully added {collectible.itemName} to inventory!");
+            // Successfully added to inventory at slotIndex
+            Debug.Log($"Successfully added {collectible.itemName} to inventory slot {slotIndex}!");
             collectible.MarkAsCollected();
 
-            // Find which slot the item was added to
-            int slotIndex = FindItemSlotIndex(collectible.itemName);
-
-            if (slotIndex >= 0 && inventoryDisplay != null)
+            if (inventoryDisplay != null)
             {
                 // Start collection animation
                 Vector3 targetPosition = inventoryDisplay.GetSlotPosition(slotIndex);
@@ -63,7 +63,7 @@ public class ItemCollector : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"No animation: slotIndex={slotIndex}, inventoryDisplay={(inventoryDisplay != null ? "exists" : "null")}");
+                Debug.LogWarning($"No animation: inventoryDisplay is null");
                 // No animation, just destroy and show immediately
                 InventorySystem.Instance.NotifyItemAdded(collectible.itemName, slotIndex);
                 Destroy(collectible.gameObject);
@@ -75,20 +75,15 @@ public class ItemCollector : MonoBehaviour
                 audioSource.PlayOneShot(collectSound);
             }
         }
-    }
-
-    private int FindItemSlotIndex(string itemName)
-    {
-        if (InventorySystem.Instance == null)
-            return -1;
-
-        var slots = InventorySystem.Instance.Slots;
-        for (int i = slots.Count - 1; i >= 0; i--)
+        else
         {
-            if (slots[i].itemName == itemName)
-                return i;
+            // Inventory is full - show message
+            Debug.Log("Inventory full! Cannot collect item.");
+
+            // Show "Inventory Full" message above player
+            Vector3 messagePosition = transform.position + Vector3.up * 1.5f;
+            InventoryFullMessage.Show(messagePosition, "Inventory Full");
         }
-        return -1;
     }
 
     private IEnumerator AnimateCollection(GameObject item, Vector3 targetPosition, string itemName, int slotIndex)
@@ -110,4 +105,5 @@ public class ItemCollector : MonoBehaviour
         // Destroy the item
         Destroy(item);
     }
+
 }

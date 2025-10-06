@@ -6,7 +6,10 @@ using UnityEngine;
 /// </summary>
 public class CollectibleInitializer : MonoBehaviour
 {
-    [Header("Item Configuration")]
+    [Header("Item Type")]
+    [SerializeField] private ItemType itemType = ItemType.GoldCoin;
+
+    [Header("Item Configuration (used when ItemType = Custom)")]
     [SerializeField] private string itemName = "Gold Coin";
     [SerializeField] private Sprite icon;
     [SerializeField] private Color iconColor = new Color(1f, 0.84f, 0f);
@@ -16,7 +19,6 @@ public class CollectibleInitializer : MonoBehaviour
     [SerializeField] private string description = "A collectible item";
 
     [Header("Visual Settings")]
-    [SerializeField] private bool useGoldCoinDefaults = true;
     [SerializeField] private int sortingOrder = 5;
 
     [Header("Collider Settings")]
@@ -33,15 +35,27 @@ public class CollectibleInitializer : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        // Apply gold coin defaults if enabled
-        if (useGoldCoinDefaults)
+        // Apply item type defaults
+        switch (itemType)
         {
-            itemName = GoldCoin.Name;
-            icon = GoldCoin.GetSprite();
-            iconColor = GoldCoin.Color;
-            isStackable = GoldCoin.IsStackable;
-            maxStackSize = GoldCoin.MaxStackSize;
-            description = GoldCoin.Description;
+            case ItemType.GoldCoin:
+                itemName = GoldCoin.Name;
+                icon = GoldCoin.GetSprite();
+                iconColor = GoldCoin.Color;
+                isStackable = GoldCoin.IsStackable;
+                maxStackSize = GoldCoin.MaxStackSize;
+                description = GoldCoin.Description;
+                break;
+
+            default:
+                // Use values from inspector
+                break;
+        }
+
+        // Use default square sprite if no icon is assigned
+        if (icon == null)
+        {
+            icon = GoldCoin.GetSprite(); // Use the same circle sprite as GoldCoin
         }
 
         // Add or get SpriteRenderer
@@ -51,11 +65,7 @@ public class CollectibleInitializer : MonoBehaviour
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
 
-        if (icon != null)
-        {
-            spriteRenderer.sprite = icon;
-        }
-        spriteRenderer.color = iconColor;
+        // Set sorting order (sprite and color will be set by Collectible.ApplyVisuals())
         spriteRenderer.sortingOrder = sortingOrder;
 
         // Add or get Collider2D
@@ -84,12 +94,16 @@ public class CollectibleInitializer : MonoBehaviour
         }
 
         // Configure collectible properties
+        collectible.itemType = itemType;
         collectible.itemName = itemName;
         collectible.icon = icon;
         collectible.iconColor = iconColor;
         collectible.isStackable = isStackable;
         collectible.maxStackSize = maxStackSize;
         collectible.description = description;
+
+        // Apply visuals to ensure tinting works correctly
+        collectible.ApplyVisuals();
 
         Debug.Log($"CollectibleInitializer: Initialized '{itemName}' collectible on {gameObject.name}");
     }
